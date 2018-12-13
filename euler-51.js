@@ -37,7 +37,7 @@ function smallestPrimeOfFamilySize(targetFamilySize) {
   const findFamiliesFromPrimes = (length) => {
     maxFamilyLength = 1;
     primes.forEach(prime => {
-      let familyLength = findFamilySizeForPrime(prime);
+      findFamilySizeForPrime(prime);
     });
   }
 
@@ -52,8 +52,10 @@ function smallestPrimeOfFamilySize(targetFamilySize) {
         resultPrime = prime;
         resultRegex = regex;
       }
+      if (familyLength >= targetFamilySize) {
+        break
+      }
     }
-    return maxFamilyLength;
   }
 
   const buildRegex = (digitsArray, keyDigit) => {
