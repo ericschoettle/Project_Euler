@@ -44,8 +44,7 @@ function smallestPrimeOfFamilySize(targetFamilySize) {
   const findFamilySizeForPrime = (prime) => {
     let digitsArray = prime.toString().split('');
     for (let i = 0; i < digitsArray.length; i++) {
-      const regex = buildRegex(digitsArray, digitsArray[i])
-      debugger;
+      const regex = buildRegex(digitsArray, digitsArray[i]);
       const familyLength = primesString.match(regex).length;
       if (familyLength > maxFamilyLength) {
         maxFamilyLength = familyLength;
