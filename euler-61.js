@@ -14,6 +14,9 @@ Each polygonal type: triangle (P3,127=8128), square (P4,91=8281), and pentagonal
 This is the only set of 4-digit numbers with this property.
 Find the sum of the only ordered set of six cyclic 4-digit numbers for which each polygonal type: triangle, square, pentagonal, hexagonal, heptagonal, and octagonal, is represented by a different number in the set.
 */
+
+let result = null; 
+
 function generateNumberSet(base, numDigits) {
   let n = 1
   let current = 1
@@ -40,8 +43,8 @@ function generateNumberSets() {
       
       // Extract the digits
       const digits = number.toString().split('');
-      const firstTwo = digits.slice(0,2).sort().join();
-      const lastTwo = digits.slice(2).sort().join();
+      const firstTwo = digits.slice(0,2).sort().join('');
+      const lastTwo = digits.slice(2).sort().join('');
 
       // use digits as indicies in array of numbers
       if (!consolidated[firstTwo]) {
@@ -59,37 +62,45 @@ function generateNumberSets() {
 const superSet = generateNumberSets();
 
 function searchForCyclicNumbers(existing, usedBases, remainingBases) {
-  function searchSuperSetByObj(currObj) {
-    if (currObj) {
-      for (const lastTwo in currObj) {
-        existing.push( {[lastTwo]: currObj[lastTwo]} );
-        usedBases.push(base);
-        remainingBases.splice(i,1);
-        searchForCyclicNumbers(existing, usedBases, remainingBases);
-      }
-    }
-  }
   if (usedBases.length === 0) {  // Inititate
     const base = remainingBases[0];
     for (const firstTwo in superSet[base]) {
       const currObj = superSet[base][firstTwo];
-      searchSuperSetByObj(currObj);
+      if (currObj) {
+        for (const lastTwo in currObj) {
+          const newExisting = existing.concat([{[lastTwo]: currObj[lastTwo], base: base} ]);
+          const newUsedBases = usedBases.concat([base]);
+          const newRemainingBases = remainingBases.slice(1);
+          searchForCyclicNumbers(newExisting, newUsedBases, newRemainingBases);
+        }
+      }
     }
   } else {
     const prevObj = existing[existing.length-1];
     const firstTwo = Object.keys(prevObj)[0];
     if (remainingBases.length) {
-      for (let i = 0; i < remainingBases.length; i++) {
-        const base = remainingBases[i];
-        const currObj = superSet[base][firstTwo];
-        searchSuperSetByObj(currObj);
+      const base = remainingBases[0];
+      const currObj = superSet[base][firstTwo];
+      if (currObj) {
+        for (const lastTwo in currObj) {
+          const newExisting = existing.concat([{[lastTwo]: currObj[lastTwo], base: base} ]);
+          const newUsedBases = usedBases.concat([base]);
+          newRemainingBases = remainingBases.slice(1);
+          searchForCyclicNumbers(newExisting, newUsedBases, newRemainingBases);
+        }
       }
     } else {
-      // todo - 1. Pull the digit splitting into a function, so I can use it to, 2. Check if the last number has the same last digits as the first. 
-      // Then, 3. Figure out how to pass it back. 
-      // 4. Maybe my for loops are going to have pointer issues with existing? Spread operator hack?
-
-      return existing
+      const firstNumber = Object.values(existing[0])[0];
+      const digits = firstNumber.toString().split('');
+      const firstTwo = digits.slice(0,2).sort().join('');
+      const lastObj = existing[existing.length - 1];
+      if (lastObj[firstTwo]) {
+        console.log('solution!', existing)
+        const sum = existing.reduce((accumulator, curr) => {
+          return accumulator + Object.values(curr)[0]
+        },0)
+        console.log(sum);
+      }
     }
   }
 }
