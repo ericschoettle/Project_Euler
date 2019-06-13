@@ -17,6 +17,9 @@ Find the sum of the only ordered set of six cyclic 4-digit numbers for which eac
 
 let result = null; 
 
+// Lessons - first, I over-optimized and over-generalized by making everything a multi-purpose function. 
+// No need to index by the first to sorted digits - just look through all and test. If test passes, continue, else not. 
+
 function generateNumberSet(base, numDigits) {
   let n = 1
   let current = 1
@@ -68,6 +71,9 @@ function searchForCyclicNumbers(existing, usedBases, remainingBases) {
       const currObj = superSet[base][firstTwo];
       if (currObj) {
         for (const lastTwo in currObj) {
+          if (currObj[lastTwo] === 1281) {
+            debugger;
+          }
           const newExisting = existing.concat([{[lastTwo]: currObj[lastTwo], base: base} ]);
           const newUsedBases = usedBases.concat([base]);
           const newRemainingBases = remainingBases.slice(1);
